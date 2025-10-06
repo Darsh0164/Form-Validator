@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MCA Student Form Validator - Email & Password</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -14,6 +13,36 @@
         <div class="form-wrapper">
             <h1>Sign-Up Form</h1>
             <form id="signupForm" novalidate>
+                <!-- Full Name Field -->
+                <div class="field-group">
+                    <label for="fullName">Full Name</label>
+                    <input 
+                        type="text" 
+                        id="fullName" 
+                        name="fullName" 
+                        required 
+                        autocomplete="name"
+                        aria-describedby="full-name-error"
+                    >
+                    <div id="full-name-error" class="error-message" aria-live="polite"></div>
+                </div>
+
+                <!-- Phone Number Field -->
+                <div class="field-group">
+                    <label for="phone">Phone Number</label>
+                    <input 
+                        type="tel" 
+                        id="phone" 
+                        name="phone" 
+                        required 
+                        inputmode="numeric"
+                        pattern="\d{10}"
+                        maxlength="10"
+                        aria-describedby="phone-error"
+                    >
+                    <div id="phone-error" class="error-message" aria-live="polite"></div>
+                </div>
+
                 <!-- Email Field -->
                 <div class="field-group">
                     <label for="email">Email Address</label>
@@ -50,30 +79,6 @@
                         </button>
                     </div>
                     
-                    <!-- Password Rules -->
-                    <div id="password-rules" class="password-rules" aria-live="polite">
-                        <h3>Password Requirements:</h3>
-                        <div class="rule" data-rule="length">
-                            <span class="rule-icon">❌</span>
-                            <span class="rule-text">At least 8 characters</span>
-                        </div>
-                        <div class="rule" data-rule="uppercase">
-                            <span class="rule-icon">❌</span>
-                            <span class="rule-text">At least one uppercase letter</span>
-                        </div>
-                        <div class="rule" data-rule="lowercase">
-                            <span class="rule-icon">❌</span>
-                            <span class="rule-text">At least one lowercase letter</span>
-                        </div>
-                        <div class="rule" data-rule="digit">
-                            <span class="rule-icon">❌</span>
-                            <span class="rule-text">At least one digit</span>
-                        </div>
-                        <div class="rule" data-rule="special">
-                            <span class="rule-icon">❌</span>
-                            <span class="rule-text">At least one special character (!@#$%)</span>
-                        </div>
-                    </div>
                     <!-- Password Success Message -->
                     <div id="password-success" class="success-message" aria-live="polite" role="status"></div>
                     <div id="password-error" class="error-message" aria-live="polite"></div>
@@ -108,6 +113,31 @@
                     Register
                 </button>
             </form>
+        </div>
+
+        <!-- Password Rules Side Panel (outside the form) -->
+        <div id="password-rules" class="password-rules side-panel" aria-live="polite">
+            <h3>Password Requirements:</h3>
+            <div class="rule" data-rule="length">
+                <span class="rule-icon">❌</span>
+                <span class="rule-text">At least 8 characters</span>
+            </div>
+            <div class="rule" data-rule="uppercase">
+                <span class="rule-icon">❌</span>
+                <span class="rule-text">At least one uppercase letter</span>
+            </div>
+            <div class="rule" data-rule="lowercase">
+                <span class="rule-icon">❌</span>
+                <span class="rule-text">At least one lowercase letter</span>
+            </div>
+            <div class="rule" data-rule="digit">
+                <span class="rule-icon">❌</span>
+                <span class="rule-text">At least one digit</span>
+            </div>
+            <div class="rule" data-rule="special">
+                <span class="rule-icon">❌</span>
+                <span class="rule-text">At least one special character (!@#$%)</span>
+            </div>
         </div>
     </div>
 

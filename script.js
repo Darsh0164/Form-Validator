@@ -4,6 +4,8 @@
 class FormValidator {
     constructor() {
         this.form = document.getElementById('signupForm');
+        this.fullNameInput = document.getElementById('fullName');
+        this.phoneInput = document.getElementById('phone');
         this.emailInput = document.getElementById('email');
         this.passwordInput = document.getElementById('password');
         this.confirmPasswordInput = document.getElementById('confirmPassword');
@@ -18,6 +20,8 @@ class FormValidator {
         
         // Validation state
         this.validationState = {
+            fullName: false,
+            phone: false,
             email: false,
             password: false,
             confirmPassword: false
@@ -37,6 +41,51 @@ class FormValidator {
         
         this.init();
     }
+
+    validateFullName() {
+        const input = this.fullNameInput;
+        const errorElement = document.getElementById('full-name-error');
+        const fieldGroup = input.closest('.field-group');
+
+        this.clearFieldState(fieldGroup);
+
+        const value = (input.value || '').trim();
+        // Letters with spaces, hyphens, apostrophes; minimum 2 characters
+        const nameRegex = /^[A-Za-z][A-Za-z\s'\-]{1,}$/;
+        if (value === '') {
+            this.showError(errorElement, fieldGroup, 'Full name is required');
+            this.validationState.fullName = false;
+        } else if (!nameRegex.test(value)) {
+            this.showError(errorElement, fieldGroup, 'Use letters only (min 2 characters)');
+            this.validationState.fullName = false;
+        } else {
+            this.showSuccess(fieldGroup);
+            this.validationState.fullName = true;
+        }
+
+        this.updateSubmitButton();
+    }
+
+    validatePhone() {
+        const value = (this.phoneInput.value || '').trim();
+        const errorElement = document.getElementById('phone-error');
+        const fieldGroup = this.phoneInput.closest('.field-group');
+
+        this.clearFieldState(fieldGroup);
+
+        if (value === '') {
+            this.showError(errorElement, fieldGroup, 'Phone number is required');
+            this.validationState.phone = false;
+        } else if (!/^\d{10}$/.test(value)) {
+            this.showError(errorElement, fieldGroup, 'Enter exactly 10 digits');
+            this.validationState.phone = false;
+        } else {
+            this.showSuccess(fieldGroup);
+            this.validationState.phone = true;
+        }
+
+        this.updateSubmitButton();
+    }
     
     init() {
         this.setupEventListeners();
@@ -44,14 +93,30 @@ class FormValidator {
     }
     
     setupEventListeners() {
+        // Full name validation
+        this.fullNameInput.addEventListener('input', () => this.validateFullName());
+        this.fullNameInput.addEventListener('blur', () => this.validateFullName());
+
+        // Phone validation and sanitization
+        this.phoneInput.addEventListener('input', () => {
+            // Keep digits only and cap at 10
+            const digits = this.phoneInput.value.replace(/\D/g, '').slice(0, 10);
+            if (this.phoneInput.value !== digits) {
+                const pos = this.phoneInput.selectionStart;
+                this.phoneInput.value = digits;
+                this.phoneInput.setSelectionRange(digits.length, digits.length);
+            }
+            this.validatePhone();
+        });
+        this.phoneInput.addEventListener('blur', () => this.validatePhone());
+
         // Email validation
         this.emailInput.addEventListener('input', () => this.validateEmail());
         this.emailInput.addEventListener('blur', () => this.validateEmail());
         
-        // Password validation
+        // Password validation (show rules only when invalid while typing)
         this.passwordInput.addEventListener('input', () => this.validatePassword());
         this.passwordInput.addEventListener('blur', () => this.validatePassword());
-        this.passwordInput.addEventListener('focus', () => this.showPasswordRules());
         
         // Confirm password validation
         this.confirmPasswordInput.addEventListener('input', () => this.validateConfirmPassword());
@@ -309,6 +374,16 @@ class FormValidator {
     
     announceErrors() {
         const errors = [];
+
+        if (!this.validationState.fullName) {
+            const err = document.getElementById('full-name-error');
+            if (err.textContent) errors.push(`Full Name: ${err.textContent}`);
+        }
+
+        if (!this.validationState.phone) {
+            const err = document.getElementById('phone-error');
+            if (err.textContent) errors.push(`Phone: ${err.textContent}`);
+        }
         
         if (!this.validationState.email) {
             const emailError = document.getElementById('email-error');
@@ -367,6 +442,8 @@ class FormValidator {
             // Reset form
             this.form.reset();
             this.validationState = {
+                fullName: false,
+                phone: false,
                 email: false,
                 password: false,
                 confirmPassword: false
